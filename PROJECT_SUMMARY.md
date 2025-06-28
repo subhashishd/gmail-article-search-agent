@@ -54,6 +54,12 @@ We have successfully transformed a "simple requirement" into a **sophisticated, 
 
 ## 🔧 Technical Excellence
 
+### AI Framework Integration
+- **LangChain 0.0.350**: Agent framework with standard interfaces and tool integration
+- **LlamaIndex 0.9.0**: Advanced RAG capabilities and document processing
+- **Ollama + Llama 3.2 1B**: Local LLM inference with resource optimization
+- **Framework Interoperability**: Compatible with LangChain protocols and easily extensible
+
 ### Search Strategy Innovation
 1. **Vector Search (Primary)**: Semantic understanding with embeddings
 2. **Individual Terms (Fallback 1)**: Query expansion for complex searches  

@@ -13,6 +13,7 @@ The GCP deployment includes:
 - **Secret Manager**: Secure credential storage
 - **Artifact Registry**: Container image storage
 - **VPC**: Private networking with security
+- **AI Framework Support**: LangChain/LlamaIndex compatible with cloud LLM services
 
 ## 📋 Prerequisites
 

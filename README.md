@@ -157,6 +157,38 @@ Content Agents → Redis Pub/Sub → Search Cache Updates
 - **Batch Processing**: Efficient LLM utilization for background tasks
 - **Adaptive Strategies**: Quality vs. speed trade-offs based on load
 
+## 🤖 AI Framework Compatibility
+
+### LangChain Integration
+Our multi-agent system is built on **LangChain 0.0.350**, providing:
+- **Agent Framework**: Standard agent interfaces and message handling
+- **Tool Integration**: Extensible capability system for agent tools
+- **Memory Management**: Conversation history and context persistence
+- **Chain Composition**: Complex workflow orchestration
+- **Observability**: Built-in logging and monitoring integration
+
+### LlamaIndex RAG Capabilities
+Advanced RAG functionality powered by **LlamaIndex 0.9.0**:
+- **Document Processing**: Intelligent text parsing and chunking
+- **Index Management**: Efficient vector index creation and maintenance
+- **Query Processing**: Sophisticated query understanding and routing
+- **Response Synthesis**: Context-aware answer generation
+- **Evaluation Framework**: Built-in RAG quality assessment
+
+### Local LLM Support
+Seamless integration with local LLM infrastructure:
+- **Ollama Integration**: Direct API compatibility with Ollama service
+- **Model Flexibility**: Support for Llama 3.2 1B and other models
+- **Resource Optimization**: Efficient inference on limited hardware
+- **Fallback Strategies**: Graceful degradation when LLM unavailable
+- **Custom Prompting**: Specialized prompts for each agent's role
+
+### Framework Interoperability
+- **Standards Compliance**: Compatible with LangChain agent protocols
+- **Extensible Architecture**: Easy to add new LangChain tools and chains
+- **Migration Ready**: Seamless transition to cloud LLM providers
+- **Hybrid Deployment**: Mix of local and cloud AI services
+
 ## 💻 Local Environment Adaptability
 
 ### Low-Resource Configuration
@@ -292,8 +324,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+- **LangChain** for agentic AI framework and agent orchestration
+- **LlamaIndex** for advanced RAG capabilities and document processing
+- **Ollama** for local LLM inference (Llama 3.2 1B model)
 - **Sentence Transformers** for embedding models
-- **Ollama** for local LLM inference
 - **PostgreSQL** with pgvector for vector storage
 - **Redis** for event coordination
 - **Docker** for containerization
