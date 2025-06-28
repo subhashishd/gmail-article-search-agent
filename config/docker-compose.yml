@@ -1,0 +1,140 @@
+version: "3.9"
+
+services:
+  # PostgreSQL database with pgvector extension
+  db:
+    image: ankane/pgvector:latest
+    container_name: gmail-search-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: gmail_article_search
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gmail-search-network
+
+  # Redis service for event bus and caching
+  redis:
+    image: redis:7-alpine
+    container_name: gmail-search-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --appendfsync everysec
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gmail-search-network
+    restart: unless-stopped
+
+  # Ollama local LLM service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gmail-search-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      # Use both Docker volume and host mount for maximum caching flexibility
+      - ollama_data:/root/.ollama
+      - ./models/ollama:/ollama_models  # Additional host mount for model sharing
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_MODELS=/root/.ollama/models  # Default Ollama models path
+    networks:
+      - gmail-search-network
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # Backend FastAPI service
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: gmail-search-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=gmail_article_search
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - BACKEND_PORT=8000
+      - EMBEDDING_MODEL=all-MiniLM-L6-v2
+      - VECTOR_TABLE_NAME=medium_articles
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2:1b
+      - REDIS_URL=redis://redis:6379
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/credentials.json
+      # Monitoring configuration
+      - ENVIRONMENT=docker
+      - OTLP_ENDPOINT=http://host.docker.internal:4317
+      - JAEGER_ENDPOINT=http://host.docker.internal:14268/api/traces
+      - ENABLE_TRACING=true
+      - ENABLE_METRICS=true
+      - ENABLE_LOGGING=true
+      
+    volumes:
+      - ../credentials:/app/credentials
+      - ../data/memory/last_update.txt:/app/last_update.txt
+      - ./models:/app/models  # Local LLM models storage
+      - ../backend:/app/backend  # Backend source code for development
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    networks:
+      - gmail-search-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Streamlit service
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: gmail-search-frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_SERVICE_URL=http://gmail-search-backend:8000
+      - FRONTEND_PORT=8501
+    depends_on:
+      - backend
+    networks:
+      - gmail-search-network
+    
+
+volumes:
+  db_data:
+    driver: local
+  app_data:
+    driver: local
+  ollama_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  gmail-search-network:
+    driver: bridge

@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+  # PostgreSQL database with pgvector extension
+  db-dev:
+    image: ankane/pgvector:latest
+    container_name: gmail-search-db-dev
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: gmail_article_search_dev
+    volumes:
+      - db_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gmail-search-network-dev
+
+  # Backend FastAPI service
+  backend-dev:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.full
+    container_name: gmail-search-backend-dev
+    ports:
+      - "8001:8000"  # Different port to avoid conflicts
+    environment:
+      - DB_HOST=db-dev
+      - DB_PORT=5432
+      - DB_NAME=gmail_article_search_dev
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - BACKEND_PORT=8000
+      - EMBEDDING_MODEL=all-MiniLM-L6-v2
+      - VECTOR_TABLE_NAME=medium_articles
+      - MEMORY_FILE_PATH=/app/data/last_update.txt
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/credentials.json
+    volumes:
+      - ./credentials:/app/credentials:rw
+      - app_data_dev:/app/data
+    depends_on:
+      db-dev:
+        condition: service_healthy
+    networks:
+      - gmail-search-network-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Streamlit service
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.full
+    container_name: gmail-search-frontend-dev
+    ports:
+      - "8502:8501"  # Different port to avoid conflicts
+    environment:
+      - BACKEND_SERVICE_URL=http://backend-dev:8000
+      - FRONTEND_PORT=8501
+    depends_on:
+      - backend-dev
+    networks:
+      - gmail-search-network-dev
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  db_data_dev:
+    driver: local
+  app_data_dev:
+    driver: local
+
+networks:
+  gmail-search-network-dev:
+    driver: bridge

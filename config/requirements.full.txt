@@ -1,0 +1,42 @@
+# Local setup requirements - no external API dependencies
+# Web Framework
+streamlit==1.39.0
+fastapi==0.115.6
+uvicorn==0.34.0
+
+# UI Components  
+streamlit-aggrid==1.0.5
+
+# Local ML/AI Libraries (HuggingFace models)
+sentence-transformers==3.3.1
+transformers==4.47.1
+torch>=1.11.0
+scikit-learn
+scipy
+numpy==1.26.4
+
+# Database (local PostgreSQL with pgvector)
+psycopg2-binary==2.9.10
+pgvector==0.3.6
+SQLAlchemy>=1.4,<3.0
+
+# Gmail API (only for fetching emails)
+google-api-python-client==2.154.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.1
+
+# Utilities
+python-dotenv==1.0.1
+requests==2.32.3
+beautifulsoup4==4.12.3
+lxml==5.3.0
+pandas==2.2.3
+
+# HTTP Client
+httpx==0.28.1
+
+# Core dependencies
+pydantic>=2.8.0,<3.0.0
+
+# For async operations
+aiofiles

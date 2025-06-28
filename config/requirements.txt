@@ -1,0 +1,61 @@
+# Web Framework
+streamlit==1.28.0
+fastapi==0.115.0
+uvicorn==0.32.0
+
+# UI Components
+streamlit-aggrid==0.3.4
+
+# AI/ML Libraries
+langchain==0.0.350
+llama-index==0.9.0
+sentence-transformers==2.2.2
+transformers==4.35.0
+ollama>=0.3.0  # Ollama client for local LLM integration
+
+# Database
+psycopg2-binary==2.9.7
+pgvector==0.2.4
+
+# Gmail API 
+google-api-python-client==2.108.0
+google-auth-httplib2==0.1.1
+google-auth-oauthlib==1.1.0
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+pydantic==2.5.0
+
+# HTTP Client  
+httpx>=0.27.0
+aiohttp>=3.9.1
+
+# Redis for event bus and caching
+redis>=5.0.1
+
+# Monitoring and Observability
+prometheus-client==0.19.0
+prometheus-fastapi-instrumentator==6.1.0
+opentelemetry-api==1.21.0
+opentelemetry-sdk==1.21.0
+opentelemetry-instrumentation==0.42b0
+opentelemetry-instrumentation-fastapi==0.42b0
+opentelemetry-instrumentation-requests==0.42b0
+opentelemetry-instrumentation-psycopg2==0.42b0
+opentelemetry-instrumentation-httpx==0.42b0
+opentelemetry-exporter-jaeger==1.21.0
+opentelemetry-exporter-prometheus==1.12.0rc1
+opentelemetry-exporter-otlp==1.21.0
+structlog==23.2.0
+
+# RAG Evaluation Framework
+ragas==0.1.0
+datasets==2.14.0
+langchain-community==0.0.12
+# Alternative lightweight evaluation
+nltk==3.8.1
+scikit-learn==1.3.0
+bert-score==0.3.13
