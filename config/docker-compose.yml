@@ -64,7 +64,7 @@ services:
   # Backend FastAPI service
   backend:
     build:
-      context: .
+      context: ..
       dockerfile: backend/Dockerfile
     container_name: gmail-search-backend
     ports:
@@ -111,7 +111,7 @@ services:
   # Frontend Streamlit service
   frontend:
     build:
-      context: .
+      context: ..
       dockerfile: frontend/Dockerfile
     container_name: gmail-search-frontend
     ports:

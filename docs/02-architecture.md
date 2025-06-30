@@ -56,5 +56,19 @@ graph LR
 *   pgvector (Postgres extension for vector storage)
 *   Docker
 
+## Agentic AI Implementation
+
+This system exemplifies **true agentic AI principles** through:
+
+- **Autonomous Decision Making**: Agents independently decide batch sizes, processing priorities, and optimization strategies
+- **Event-Driven Coordination**: Redis pub/sub enables loose coupling while maintaining system coherence
+- **Self-Healing Architecture**: Circuit breakers, graceful degradation, and automatic recovery
+- **Adaptive Performance**: Continuous optimization based on observed metrics and system state
+- **Specialized Agent Capabilities**: Each agent has domain expertise and operates autonomously
+
+> **📖 For comprehensive details on agentic AI patterns and implementation:**
+> **See [Agentic AI Reference Guide](AGENTIC_AI_REFERENCE.md)**
+
 **Next Steps:**
 *   Proceed to `03-setup-and-configuration.md` to prepare development environment.
+*   Review `AGENTIC_AI_REFERENCE.md` for detailed agentic patterns and best practices.

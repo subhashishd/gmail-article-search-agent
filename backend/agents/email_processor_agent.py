@@ -16,6 +16,9 @@ from typing import Dict, Any, List
 from datetime import datetime, timezone
 from backend.core.event_bus import event_bus
 from backend.services.gmail_service_oauth import get_gmail_service
+from backend.core.memory_manager import memory_manager
+from backend.core.task_planner import HTNPlanner, MCTSPlanner, TaskExecutor
+from backend.core.tool_registry import ToolRegistry
 
 class EmailProcessorAgent:
     """Chronological email processing agent with proper timestamp management"""
@@ -41,6 +44,16 @@ class EmailProcessorAgent:
         if not self.gmail_service.authenticate():
             raise Exception("Gmail authentication failed")
         
+# Initialize additional components
+        self.memory_manager = memory_manager
+        self.tool_registry = ToolRegistry()
+        self.htn_planner = HTNPlanner(goal="Email Processing", task_descriptions={
+            "Fetch Emails": "Fetch emails from Gmail",
+            "Process Emails": "Process fetched emails"
+        })
+        self.mcts_planner = MCTSPlanner()
+        self.task_executor = TaskExecutor()
+
         # Log current status
         last_processed = self._get_last_processed_date()
         self.logger.info(f"Last processed email date: {last_processed}")
@@ -60,6 +73,23 @@ class EmailProcessorAgent:
         Process emails in proper chronological order starting from Jan 1, 2025.
         This ensures proper chronological processing and timestamp management.
         """
+        
+        # Generate task plan
+        task_plan = self.htn_planner.decompose_tasks()
+        optimal_plan = self.mcts_planner.plan(initial_task=task_plan.tasks[0])
+        execution_results = self.task_executor.execute_plan(task_plan)
+
+        self.logger.info(f"Task execution completed: {execution_results}")
+
+        # Store plan and results in memory
+        await self.memory_manager.store_episode(
+            agent_id=self.agent_id,
+            task_type="Email Fetch Plan",
+            context={"max_emails": max_emails},
+            actions_taken=[{"task": task.description} for task in optimal_plan],
+            outcome={"execution_results": execution_results},
+            success=len(execution_results['failed_tasks']) == 0
+        )
         try:
             # Get last processed date (not last update time)
             last_processed = self._get_last_processed_date()

@@ -140,7 +140,7 @@ class HybridRAGService:
                 "total_found": len(search_results),
                 "query": query,
                 "search_method": search_method,
-                "llm_enhanced": True
+                "llm_enhanced": False  # Temporarily disable LLM enhancement
             }
             
             if context:

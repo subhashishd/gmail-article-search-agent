@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 
 # Copy requirements and install Python dependencies
-COPY requirements.txt .
+COPY config/requirements.txt .
 
 # Install Python dependencies including Ollama client
 RUN pip install --no-cache-dir --upgrade pip

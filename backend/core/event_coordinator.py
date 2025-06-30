@@ -12,6 +12,7 @@ from backend.core.rate_limiter import rate_limiter
 from backend.agents.email_processor_agent import EmailProcessorAgent
 from backend.agents.content_agent import ContentAgent
 from backend.agents.search_agent import SearchAgent
+from backend.core.memory_manager import memory_manager
 
 class EventCoordinator:
     """
@@ -50,6 +51,9 @@ class EventCoordinator:
             
             # Initialize rate limiter
             await rate_limiter.initialize()
+            
+            # Initialize memory manager
+            await memory_manager.initialize()
             
             # Create agents now that Redis is available
             self.email_processor = EmailProcessorAgent("email_processor_001")
